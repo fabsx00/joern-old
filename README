@@ -14,6 +14,16 @@ language aware static analysis tools. To achieve this, it writes all
 acquired information to disk as text files or serialized Python
 objects, thus providing simple and direct access to the data.
 
+Installation:
+=============
+
+Lain is written in Python2. To install it, execute the
+following:
+
+$ sudo python2 setup.py install
+
+You will also require a Java Virtual Machine to run CodeSensor.
+
 Usage:
 ======
 
