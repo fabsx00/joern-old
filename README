@@ -1,0 +1,21 @@
+Lain
+====
+
+Lain is a tool for robust analysis of C/C++ code. It generates
+abstract syntax trees, control flow graphs and a searchable index of
+code constructs, even for code that would normally not compile due to
+missing headers. As such, it has been specifically designed to meet
+the needs of code auditors who may only have access to parts of the
+code base and lack information on build requirements. Lain enables you
+as a code auditor to write quick & dirty, language aware static
+analysis scripts. Lain writes the information you need to disk, thus
+not creating the need to learn a complicated API.
+
+Credits:
+========
+
+Developed by: Fabian 'fabs' Yamaguchi (University of Goettingen)
+Ack: @trapflag, @teh_greg, @$SERGEY, @bruhns, @joernchen, @mlsec
+
+Usage:
+======

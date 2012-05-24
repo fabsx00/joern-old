@@ -1,0 +1,27 @@
+#!/usr/bin/env python2
+
+import argparse
+import sourceutils.codeIndex.create as CodeIndexCreate
+
+class CLI():
+    def __init__(self):
+        self.initializeOptParser()
+        self.parseCommandLine()
+    
+    def initializeOptParser(self):
+        self.argParser = argparse.ArgumentParser(description = "Parses source code and creates abstract syntax trees for all source files and control flow graphs for all functions.")
+        self.argParser.add_argument("project_dir", help="directory created by lain_parse")
+        
+    def parseCommandLine(self):
+        self.args = self.argParser.parse_args()
+
+    def getProjectRoot(self):
+        return self.args.project_dir
+
+def main():
+    cli = CLI()
+    projectRoot = cli.getProjectRoot()
+    CodeIndexCreate.main(projectRoot)
+    
+if __name__ == '__main__':
+    main()

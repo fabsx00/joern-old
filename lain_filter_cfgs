@@ -1,0 +1,76 @@
+#!/usr/bin/env python2
+
+#!/usr/bin/env python2
+
+import argparse
+
+import sourceutils.pythonCFGFilter.create as pythonCFGFilterCreate
+
+from sourceutils.pythonCFGFilter.pruning.PredicatedActionsFilter import PredicatedActionsFilter
+from sourceutils.pythonCFGFilter.pruning.IdentityFilter import IdentityFilter
+
+from sourceutils.pythonCFGFilter.pruning.CFGFilter import CFGFilter
+
+from sourceutils.pythonCFGFilter.pruning.row2string.CFGRow2String import CFGRow2String
+
+
+def stringList(value):
+    return value.split(',')
+
+class CLI():
+    def __init__(self):
+        self.initializeOptParser()
+        self.parseCommandLine()
+    
+    def initializeOptParser(self):
+        self.argParser = argparse.ArgumentParser(description = "Filters control flow graphs created by lain_parse.")
+        self.argParser.add_argument("project_dir", help="directory containing the output of lain_parse")
+        self.argParser.add_argument('--filter', choices=['predicatedActions', 'identity'], default = 'predicatedActions')
+        self.argParser.add_argument("--row2StringConverter", choices= ['default'], default='default')
+        self.argParser.add_argument("--customFilterNodes", type=stringList, default=None, help="Comma separated list of node types to preserve. The filter will discard all other nodes.")
+        self.argParser.add_argument("--customFilterDiscard",  action="store_true", default=False, help="If set, all nodes specified by customFilterNodes will be discarded and all other nodes will be preserved")
+        self.argParser.add_argument("--customFilterNodesNotToExpand", type=stringList, default=None, help="Nodes not to expand")
+        self.argParser.add_argument("--customFilterMergeRows", type=stringList, default=None, help="Row types to merge")
+        
+    def parseCommandLine(self):
+        self.args = self.argParser.parse_args()
+    
+    def createFilterFromDescription(self):
+        print 'creating custom filter'
+        newFilter = CFGFilter()
+        newFilter.keepNodesOfInterest = not self.args.customFilterDiscard
+        newFilter.row2StringConverter = self.row2StringConverter
+        newFilter.nodeTypesOfInterest = self.args.customFilterNodes
+        newFilter.dontExpandNodes =  self.args.customFilterNodesNotToExpand
+        newFilter.mergRows = self.args.customFilterMergeRows
+        return newFilter
+    
+    def userWantsCustomFilter(self):
+        return self.args.customFilterNodes != None
+    
+    def filterNameToFilter(self, filterName):
+        if filterName == 'predicatedActions':
+            return PredicatedActionsFilter()
+        elif filterName == 'identity':
+            return IdentityFilter()
+    
+    def row2StringNameToConverter(self, name):
+        if name == 'default':
+            return CFGRow2String()
+        
+    def run(self):
+        projectDir = self.args.project_dir
+
+        self.row2StringConverter = self.row2StringNameToConverter(self.args.row2StringConverter)
+        
+        if self.userWantsCustomFilter():
+            f = self.createFilterFromDescription()
+        else:
+            f = self.filterNameToFilter(self.args.filter)
+            
+        pythonCFGFilterCreate.main(projectDir, f, self.row2StringConverter)
+        
+if __name__ == '__main__':
+    cli = CLI()
+    cli.run()
+

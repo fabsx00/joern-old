@@ -1,0 +1,2 @@
+include lain_filter_asts lain_filter_cfgs lain_index lain_parse lain_plot README
+recursive-include sourceutils *
