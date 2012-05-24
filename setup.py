@@ -8,8 +8,13 @@ setup(name = "lain",
     author = "Fabian Yamaguchi",
     author_email = "fabs@phenoelit.de",
     url = "http://codeexploration.blogspot.de",
-    packages = ['sourceutils'],
-    package_data = {'sourceutils' : files },
+    packages = ['sourceutils', 'sourceutils/codeIndex', 'sourceutils/codeTree',
+                'sourceutils/csvASTs', 'sourceutils/misc', 'sourceutils/plotting',
+                'sourceutils/pythonASTFilter', 'sourceutils/pythonASTFilter/pruning', 'sourceutils/pythonASTFilter/pruning/row2string',  
+                'sourceutils/pythonCFGFilter', 'sourceutils/pythonCFGFilter/pruning', 'sourceutils/pythonCFGFilter/pruning/row2string',  
+                'sourceutils/pythonASTs', 'sourceutils/pythonCFGs'                
+],
+    package_data = {'sourceutils' : files , 'sourceutils/csvASTs' : ['CodeSensor.jar']},
     scripts = ["lain_filter_asts", "lain_filter_cfgs", "lain_index", "lain_parse", "lain_plot"],
     # long_description = """Really long text here.""" 
     
