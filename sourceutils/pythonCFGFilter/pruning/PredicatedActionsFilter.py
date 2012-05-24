@@ -9,5 +9,5 @@ class PredicatedActionsFilter(CFGFilter):
         
         self.setNodeTypesOfInterest(nodeTypesOfInterest)
         
-        self.dontExpandNodes = ['arg', 'goto', 'cond']
+        self.dontExpandNodes = ['arg', 'goto', 'cond', 'return']
         self.mergeRows = ['water', 'op']

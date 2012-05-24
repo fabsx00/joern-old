@@ -48,7 +48,7 @@ class DotDrawer:
         signature = signature.replace('\n', '')
         signature = signature.replace('\t', '')
         signature = re.sub('[ ]+', ' ', signature)
-        signature = signature.replace(';', ';\\n')
+        # signature = signature.replace(';', ';\\n')
         # signature = signature.replace('(', '\\n(', 1)
         # signature = signature.replace(',', ',\\n')
         return signature
