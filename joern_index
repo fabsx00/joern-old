@@ -10,7 +10,7 @@ class CLI():
     
     def initializeOptParser(self):
         self.argParser = argparse.ArgumentParser(description = "Parses source code and creates abstract syntax trees for all source files and control flow graphs for all functions.")
-        self.argParser.add_argument("project_dir", help="directory created by lain_parse")
+        self.argParser.add_argument("project_dir", help="directory created by joern_parse")
         
     def parseCommandLine(self):
         self.args = self.argParser.parse_args()

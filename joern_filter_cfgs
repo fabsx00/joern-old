@@ -2,17 +2,15 @@
 
 import argparse
 
-import sourceutils.pythonASTFilter.create as pythonASTFilterCreate
+import sourceutils.pythonCFGFilter.create as pythonCFGFilterCreate
 
-from sourceutils.pythonASTFilter.pruning.APIAndSyntaxFilter import APIAndSyntaxFilter
-from sourceutils.pythonASTFilter.pruning.APISymbolsFilter import APISymbolsFilter
-from sourceutils.pythonASTFilter.pruning.WaterFilter import WaterFilter
-from sourceutils.pythonASTFilter.pruning.IdentityFilter import IdentityFilter
+from sourceutils.pythonCFGFilter.pruning.PredicatedActionsFilter import PredicatedActionsFilter
+from sourceutils.pythonCFGFilter.pruning.IdentityFilter import IdentityFilter
 
-from sourceutils.pythonASTFilter.pruning.ParseTreeFilter import ParseTreeFilter
+from sourceutils.pythonCFGFilter.pruning.CFGFilter import CFGFilter
 
-from sourceutils.pythonASTFilter.pruning.row2string.DefaultRow2String import DefaultRow2String
-from sourceutils.pythonASTFilter.pruning.row2string.IdentityRow2String import IdentityRow2String
+from sourceutils.pythonCFGFilter.pruning.row2string.CFGRow2String import CFGRow2String
+
 
 def stringList(value):
     return value.split(',')
@@ -23,43 +21,41 @@ class CLI():
         self.parseCommandLine()
     
     def initializeOptParser(self):
-        self.argParser = argparse.ArgumentParser(description = "Filters abstract syntax trees created by lain_parse.")
-        self.argParser.add_argument("project_dir", help="directory containing the output of lain_parse")
-        self.argParser.add_argument('--filter', choices=['APIAndSyntax', 'APISymbols', 'allButWater', 'identity'], default = 'APIAndSyntax')
-        self.argParser.add_argument("--row2StringConverter", choices= ['default', 'identity'], default='default')
+        self.argParser = argparse.ArgumentParser(description = "Filters control flow graphs created by joern_parse.")
+        self.argParser.add_argument("project_dir", help="directory containing the output of joern_parse")
+        self.argParser.add_argument('--filter', choices=['predicatedActions', 'identity'], default = 'predicatedActions')
+        self.argParser.add_argument("--row2StringConverter", choices= ['default'], default='default')
         self.argParser.add_argument("--customFilterNodes", type=stringList, default=None, help="Comma separated list of node types to preserve. The filter will discard all other nodes.")
         self.argParser.add_argument("--customFilterDiscard",  action="store_true", default=False, help="If set, all nodes specified by customFilterNodes will be discarded and all other nodes will be preserved")
+        self.argParser.add_argument("--customFilterNodesNotToExpand", type=stringList, default=None, help="Nodes not to expand")
+        self.argParser.add_argument("--customFilterMergeRows", type=stringList, default=None, help="Row types to merge")
         
     def parseCommandLine(self):
         self.args = self.argParser.parse_args()
     
     def createFilterFromDescription(self):
         print 'creating custom filter'
-        newFilter = ParseTreeFilter()
+        newFilter = CFGFilter()
         newFilter.keepNodesOfInterest = not self.args.customFilterDiscard
         newFilter.row2StringConverter = self.row2StringConverter
         newFilter.nodeTypesOfInterest = self.args.customFilterNodes
+        newFilter.dontExpandNodes =  self.args.customFilterNodesNotToExpand
+        newFilter.mergRows = self.args.customFilterMergeRows
         return newFilter
     
     def userWantsCustomFilter(self):
         return self.args.customFilterNodes != None
     
     def filterNameToFilter(self, filterName):
-        if filterName == 'APIAndSyntax':
-            return APIAndSyntaxFilter()
-        elif filterName == 'APISymbols':
-            return APISymbolsFilter()
-        elif filterName == 'allButWater':
-            return WaterFilter()
+        if filterName == 'predicatedActions':
+            return PredicatedActionsFilter()
         elif filterName == 'identity':
             return IdentityFilter()
     
     def row2StringNameToConverter(self, name):
         if name == 'default':
-            return DefaultRow2String()
-        elif name == 'identity':
-            return IdentityRow2String()
-    
+            return CFGRow2String()
+        
     def run(self):
         projectDir = self.args.project_dir
 
@@ -70,8 +66,7 @@ class CLI():
         else:
             f = self.filterNameToFilter(self.args.filter)
             
-        
-        pythonASTFilterCreate.main(projectDir, f, self.row2StringConverter)
+        pythonCFGFilterCreate.main(projectDir, f, self.row2StringConverter)
         
 if __name__ == '__main__':
     cli = CLI()

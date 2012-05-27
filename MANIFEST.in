@@ -1,2 +1,2 @@
-include lain_parse lain_filter_asts lain_filter_cfgs lain_index lain_plot README.md LICENSE AUTHORS
+include joern_parse joern_filter_asts joern_filter_cfgs joern_index joern_plot README.md LICENSE AUTHORS
 recursive-include sourceutils *
